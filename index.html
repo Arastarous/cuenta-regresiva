@@ -3,140 +3,514 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cuenta regresiva</title>
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+<title>Jubilación del Lic. Rafael Hernández</title>
+<meta name="description" content="Cuenta regresiva oficial (no oficial) para la jubilación del Lic. Rafael Hernández: 1 de junio de 2027, 3:00 pm.">
 
-  html, body {
-    height: 100%;
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_MX">
+<meta property="og:url" content="https://arastarous.github.io/cuenta-regresiva/">
+<meta property="og:title" content="Cuenta regresiva: jubilación del Lic. Rafael Hernández">
+<meta property="og:description" content="Meses, quincenas y un último aguinaldo. 1 de junio de 2027, 3:00 pm.">
+<meta property="og:image" content="https://arastarous.github.io/cuenta-regresiva/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://arastarous.github.io/cuenta-regresiva/preview.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏳</text></svg>">
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { min-height: 100%; }
+  body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: #0f1115;
     color: #f2f2f2;
-  }
-
-  body {
     display: flex;
-    align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 32px 16px 48px;
+    -webkit-tap-highlight-color: transparent;
   }
+  .wrap { width: 100%; max-width: 640px; text-align: center; }
 
-  .wrap {
-    width: 100%;
-    max-width: 560px;
-    text-align: center;
+  .label { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: #8a8f98; margin-bottom: 6px; }
+  .name { font-size: 26px; font-weight: 700; cursor: pointer; user-select: none; display: inline-block; }
+  .when { font-size: 14px; color: #8a8f98; margin: 6px 0 28px; }
+
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+  .cell { background: #1a1d24; border-radius: 12px; padding: 16px 4px; }
+  .num { font-size: 34px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+  .unit { font-size: 11px; color: #8a8f98; margin-top: 8px; text-transform: uppercase; letter-spacing: .05em; }
+  .total { font-size: 13px; color: #8a8f98; margin-top: 12px; }
+  .adjusted { display: none; margin-top: 10px; font-size: 13px; color: #f0b44c; }
+
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 24px; }
+  .card { background: #1a1d24; border-radius: 12px; padding: 16px; text-align: left; }
+  .card .k { font-size: 12px; color: #8a8f98; text-transform: uppercase; letter-spacing: .05em; }
+  .card .v { font-size: 30px; font-weight: 700; margin: 6px 0 4px; font-variant-numeric: tabular-nums; }
+  .card .s { font-size: 13px; color: #b5b9c0; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 24px; }
+  button {
+    font: inherit; font-size: 15px; color: #f2f2f2; background: #252a34;
+    border: 1px solid #353b47; border-radius: 10px; padding: 12px 16px; cursor: pointer;
   }
+  button:active { transform: scale(.97); }
+  #btn-back { display: none; border-color: #6b5320; background: #2e2716; }
+  .reply { min-height: 22px; margin-top: 14px; font-size: 15px; color: #d6d9de; }
 
-  .label {
-    font-size: 14px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: #8a8f98;
-    margin-bottom: 8px;
+  .horoscope { margin-top: 24px; background: #161a22; border: 1px solid #262c38; border-radius: 12px; padding: 16px; text-align: left; }
+  .horoscope .k { font-size: 12px; color: #8a8f98; text-transform: uppercase; letter-spacing: .05em; }
+  .horoscope .sign { font-size: 13px; color: #b5b9c0; margin-top: 2px; }
+  .horoscope p { font-size: 16px; line-height: 1.5; margin-top: 10px; }
+
+  .done { display: none; font-size: 24px; font-weight: 700; margin: 12px 0; }
+
+  .overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.65);
+    align-items: center; justify-content: center; padding: 16px; z-index: 10;
   }
+  .overlay.show { display: flex; }
+  .modal { position: relative; background: #1d212a; border: 1px solid #353b47; border-radius: 14px; padding: 24px 20px; width: 100%; max-width: 380px; text-align: center; }
+  .modal h2 { font-size: 20px; margin-bottom: 8px; }
+  .modal p { font-size: 15px; color: #c9ccd2; }
+  .modal-btns { position: relative; height: 150px; margin-top: 16px; }
+  .modal-btns button { position: absolute; width: 120px; transition: left .15s, top .15s; }
 
-  .target-date {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 40px;
+  .oficio { background: #f4f1e8; color: #1c1c1c; border-radius: 6px; padding: 22px 20px; width: 100%; max-width: 420px; text-align: left; font-family: Georgia, "Times New Roman", serif; max-height: 90vh; overflow-y: auto; }
+  .oficio .hdr { font-size: 12px; text-align: right; line-height: 1.5; color: #444; }
+  .oficio .asunto { font-size: 13px; margin: 14px 0; }
+  .oficio p { font-size: 15px; line-height: 1.55; margin-bottom: 10px; }
+  .oficio ol { margin: 0 0 10px 22px; font-size: 15px; line-height: 1.5; }
+  .stamp { display: inline-block; border: 3px solid #b3261e; color: #b3261e; font-weight: 700; font-family: Arial, sans-serif; letter-spacing: .12em; padding: 4px 12px; transform: rotate(-8deg); font-size: 22px; margin: 6px 0 12px; }
+  .oficio .firma { margin-top: 14px; font-size: 14px; }
+  .oficio .btns { display: flex; gap: 10px; margin-top: 18px; }
+  .oficio button { color: #1c1c1c; background: #e6e1d3; border-color: #c9c2ae; font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; flex: 1; }
+
+  .beach {
+    display: none; position: fixed; inset: 0; z-index: 20; overflow: hidden;
+    background: linear-gradient(#7fd3f7 0%, #bfeaff 48%, #1a9bc4 48%, #0f7fa3 66%, #f2d59b 66%, #e8c47c 100%);
+    color: #11324a; text-align: center; padding: 40px 16px;
   }
+  .beach.show { display: block; }
+  .sun { position: absolute; top: 24px; right: 24px; width: 70px; height: 70px; border-radius: 50%; background: #ffd23f; }
+  .beach h2 { position: relative; font-size: 26px; margin-top: 110px; }
+  .beach .stats { position: relative; margin-top: 18px; font-size: 18px; line-height: 1.8; font-weight: 600; }
+  .beach button { position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%); background: #fff8e6; color: #11324a; border-color: #d9c28c; }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-    margin-bottom: 32px;
-  }
-
-  .cell {
-    background: #1a1d24;
-    border-radius: 12px;
-    padding: 20px 8px;
-  }
-
-  .cell .num {
-    font-size: 40px;
-    font-weight: 700;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .cell .unit {
-    font-size: 12px;
-    color: #8a8f98;
-    margin-top: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .done {
-    font-size: 24px;
-    font-weight: 600;
-    margin: 12px 0 0;
-  }
-
-  @media (max-width: 420px) {
-    .cell .num { font-size: 30px; }
-    .grid { gap: 8px; }
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+    .num { font-size: 30px; }
+    .name { font-size: 22px; }
+    .cards { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
 <div class="wrap">
-  <div class="label">cuenta regresiva hacia</div>
-  <div class="target-date" id="target-label">1 de junio de 2027</div>
+  <div class="label">Faltan para la jubilación del</div>
+  <div class="name" id="name">Lic. Rafael Hernández</div>
+  <div class="when">1 de junio de 2027 · 3:00 pm</div>
 
-  <div class="grid" id="grid">
-    <div class="cell"><div class="num" id="days">0</div><div class="unit">días</div></div>
-    <div class="cell"><div class="num" id="hours">0</div><div class="unit">horas</div></div>
-    <div class="cell"><div class="num" id="mins">0</div><div class="unit">min</div></div>
-    <div class="cell"><div class="num" id="secs">0</div><div class="unit">seg</div></div>
+  <div id="counter">
+    <div class="grid">
+      <div class="cell"><div class="num" id="c-months">0</div><div class="unit">meses</div></div>
+      <div class="cell"><div class="num" id="c-weeks">0</div><div class="unit">semanas</div></div>
+      <div class="cell"><div class="num" id="c-days">0</div><div class="unit">días</div></div>
+      <div class="cell"><div class="num" id="c-hours">0</div><div class="unit">horas</div></div>
+      <div class="cell"><div class="num" id="c-mins">0</div><div class="unit">min</div></div>
+      <div class="cell"><div class="num" id="c-secs">0</div><div class="unit">seg</div></div>
+    </div>
+    <div class="total" id="total"></div>
+    <div class="adjusted" id="adjusted"></div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="k">Quincenas restantes</div>
+        <div class="v" id="q-count">0</div>
+        <div class="s" id="q-next"></div>
+      </div>
+      <div class="card">
+        <div class="k">Aguinaldos restantes</div>
+        <div class="v" id="a-count">0</div>
+        <div class="s" id="a-note"></div>
+      </div>
+    </div>
   </div>
 
-  <div class="done" id="done-msg" style="display:none;">¡Llegó el día!</div>
+  <div class="done" id="done">¡Felicidades, Lic.! Ya es oficialmente jubilado.</div>
+
+  <div class="actions">
+    <button id="btn-arrived">¿Ya llegó?</button>
+    <button id="btn-forward">Adelantar el tiempo</button>
+    <button id="btn-back">Regresar el tiempo</button>
+  </div>
+  <div class="reply" id="reply"></div>
+
+  <div class="horoscope">
+    <div class="k">Horóscopo del día</div>
+    <div class="sign">Signo: Jubilado en proceso</div>
+    <p id="horoscope"></p>
+  </div>
+</div>
+
+<div class="overlay" id="cancel-overlay">
+  <div class="modal">
+    <h2>¿Desea cancelar la jubilación?</h2>
+    <p>Esta acción no se puede deshacer.</p>
+    <div class="modal-btns" id="modal-btns">
+      <button id="btn-yes" style="left: 20px; top: 100px;">Sí</button>
+      <button id="btn-no" style="right: 20px; top: 100px;">No</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="oficio-overlay">
+  <div class="oficio">
+    <div class="hdr">
+      Oficio No. JUB/404/2027<br>
+      Departamento de Jubilaciones Imaginarias<br>
+      Culiacán, Sinaloa, a la fecha de hoy
+    </div>
+    <div class="asunto"><b>Asunto:</b> Solicitud de jubilación anticipada.</div>
+    <p><b>Lic. Rafael Hernández</b><br>Presente.</p>
+    <p>Por medio del presente se le informa que su solicitud de jubilación anticipada ha sido:</p>
+    <div class="stamp">DENEGADA</div>
+    <p>Con fundamento en el artículo 404 de la Ley de Pendientes que Nunca se Acaban, toda vez que:</p>
+    <ol>
+      <li>Todavía hay pendientes.</li>
+      <li>Nadie más sabe dónde quedaron los expedientes.</li>
+      <li>¿Quién va a contestar los oficios que llegan a las 2:55 pm?</li>
+    </ol>
+    <p>Sin otro particular, reciba un cordial saludo y muchos pendientes.</p>
+    <div class="firma">Atentamente<br><b>La Oficina</b><br>(que no lo quiere dejar ir)</div>
+    <div class="btns">
+      <button id="btn-appeal">Apelar</button>
+      <button id="btn-accept">Acatar</button>
+    </div>
+  </div>
+</div>
+
+<div class="beach" id="beach">
+  <div class="sun"></div>
+  <h2>Así te imaginamos el 2 de junio</h2>
+  <div class="stats">
+    Días de hamaca restantes: ∞<br>
+    Pendientes: 0<br>
+    Oficios por contestar: 0<br>
+    Alarmas: ninguna
+  </div>
+  <button id="btn-office">Volver a la oficina</button>
 </div>
 
 <script>
 (function () {
-  // ---- Configuración ----
-  // Cambia esta fecha para reutilizar la página con otro evento.
-  var TARGET = new Date('2027-06-01T00:00:00');
+  // ===== Configuración =====
+  // Hora de Sinaloa: UTC-7 todo el año (sin horario de verano).
+  var TZ_OFFSET_MS = -7 * 3600000;
+  // 1 de junio de 2027, 3:00 pm en Sinaloa = 22:00 UTC.
+  var TARGET_UTC = Date.UTC(2027, 5, 1, 22, 0, 0);
+  // Aparece el aviso de "¿Desea cancelar la jubilación?" a estos segundos de entrar.
+  var CANCEL_POPUP_SECONDS = 5;
 
-  var daysEl = document.getElementById('days');
-  var hoursEl = document.getElementById('hours');
-  var minsEl = document.getElementById('mins');
-  var secsEl = document.getElementById('secs');
-  var grid = document.getElementById('grid');
-  var doneMsg = document.getElementById('done-msg');
+  var DAY = 86400000;
+  var MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  var DIAS = ['dom','lun','mar','mié','jue','vie','sáb'];
+
+  // Ajustes de broma: solo viven en memoria, se borran al recargar.
+  var extraDays = 0;
+  var extraMonths = 0;
+
+  function $(id) { return document.getElementById(id); }
+
+  // "Fecha local de Sinaloa" representada como Date cuyos campos UTC son la hora local.
+  function toLocal(utcMs) { return new Date(utcMs + TZ_OFFSET_MS); }
+  function localDate(y, m, d) { return new Date(Date.UTC(y, m, d)); }
+
+  function addMonths(date, n) {
+    var y = date.getUTCFullYear(), m = date.getUTCMonth() + n, d = date.getUTCDate();
+    var last = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+    return new Date(Date.UTC(y, m, Math.min(d, last), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds(), date.getUTCMilliseconds()));
+  }
+
+  function effectiveTargetLocal() {
+    var t = addMonths(toLocal(TARGET_UTC), extraMonths);
+    return new Date(t.getTime() + extraDays * DAY);
+  }
+
+  // ----- Días de descanso obligatorio (LFT art. 74), usados para recorrer el pago de quincena -----
+  function nthMonday(y, m, n) {
+    var first = localDate(y, m, 1).getUTCDay();
+    var offset = (8 - first) % 7;
+    return 1 + offset + (n - 1) * 7;
+  }
+  function isHoliday(d) {
+    var y = d.getUTCFullYear(), m = d.getUTCMonth(), day = d.getUTCDate();
+    if (m === 0 && day === 1) return true;
+    if (m === 1 && day === nthMonday(y, 1, 1)) return true;
+    if (m === 2 && day === nthMonday(y, 2, 3)) return true;
+    if (m === 4 && day === 1) return true;
+    if (m === 8 && day === 16) return true;
+    if (m === 10 && day === nthMonday(y, 10, 3)) return true;
+    if (m === 11 && day === 25) return true;
+    return false;
+  }
+
+  // Si cae viernes, sábado o domingo: jueves anterior. Si cae en inhábil: un día antes.
+  function payDay(nominal) {
+    var d = new Date(nominal.getTime());
+    for (var i = 0; i < 10; i++) {
+      if (isHoliday(d)) { d = new Date(d.getTime() - DAY); continue; }
+      var dow = d.getUTCDay();
+      if (dow === 5) { d = new Date(d.getTime() - DAY); continue; }
+      if (dow === 6) { d = new Date(d.getTime() - 2 * DAY); continue; }
+      if (dow === 0) { d = new Date(d.getTime() - 3 * DAY); continue; }
+      break;
+    }
+    return d;
+  }
+
+  function quincenas(todayLocal, targetLocal) {
+    var today = localDate(todayLocal.getUTCFullYear(), todayLocal.getUTCMonth(), todayLocal.getUTCDate());
+    var end = localDate(targetLocal.getUTCFullYear(), targetLocal.getUTCMonth(), targetLocal.getUTCDate());
+    var count = 0, next = null;
+    var y = today.getUTCFullYear(), m = today.getUTCMonth();
+    while (localDate(y, m, 1) <= end) {
+      var nominals = [localDate(y, m, 15), new Date(Date.UTC(y, m + 1, 0))];
+      for (var i = 0; i < 2; i++) {
+        var p = payDay(nominals[i]);
+        if (p >= today && p <= end) {
+          count++;
+          if (!next) next = p;
+        }
+      }
+      m++; if (m > 11) { m = 0; y++; }
+    }
+    return { count: count, next: next };
+  }
+
+  // Aguinaldo: a más tardar el 20 de diciembre (LFT art. 87).
+  function aguinaldos(todayLocal, targetLocal) {
+    var today = localDate(todayLocal.getUTCFullYear(), todayLocal.getUTCMonth(), todayLocal.getUTCDate());
+    var count = 0;
+    for (var y = today.getUTCFullYear(); y <= targetLocal.getUTCFullYear(); y++) {
+      var d = localDate(y, 11, 20);
+      if (d >= today && d <= targetLocal) count++;
+    }
+    return count;
+  }
+
+  function fmtDate(d) {
+    return DIAS[d.getUTCDay()] + ' ' + d.getUTCDate() + ' ' + MESES[d.getUTCMonth()];
+  }
+
+  var lastDaysTotal = 0;
+
+  function setUnit(key, n, one, many) {
+    $('c-' + key).nextElementSibling.textContent = n === 1 ? one : many;
+  }
 
   function tick() {
-    var now = new Date();
-    var diff = TARGET.getTime() - now.getTime();
+    var nowLocal = toLocal(Date.now());
+    var target = effectiveTargetLocal();
+    var diff = target.getTime() - nowLocal.getTime();
 
     if (diff <= 0) {
-      grid.style.display = 'none';
-      doneMsg.style.display = 'block';
+      $('counter').style.display = 'none';
+      $('done').style.display = 'block';
       return;
     }
 
-    var days = Math.floor(diff / 86400000);
-    var hours = Math.floor((diff % 86400000) / 3600000);
-    var mins = Math.floor((diff % 3600000) / 60000);
-    var secs = Math.floor((diff % 60000) / 1000);
+    var months = (target.getUTCFullYear() - nowLocal.getUTCFullYear()) * 12 + (target.getUTCMonth() - nowLocal.getUTCMonth());
+    if (addMonths(nowLocal, months) > target) months--;
+    if (months < 0) months = 0;
+    var rest = target.getTime() - addMonths(nowLocal, months).getTime();
 
-    daysEl.textContent = days.toLocaleString('es-MX');
-    hoursEl.textContent = hours;
-    minsEl.textContent = mins;
-    secsEl.textContent = secs;
+    var daysRest = Math.floor(rest / DAY);
+    var weeks = Math.floor(daysRest / 7);
+    var days = daysRest % 7;
+    var hours = Math.floor((rest % DAY) / 3600000);
+    var mins = Math.floor((rest % 3600000) / 60000);
+    var secs = Math.floor((rest % 60000) / 1000);
+
+    setUnit('months', months, 'mes', 'meses');
+    setUnit('weeks', weeks, 'semana', 'semanas');
+    setUnit('days', days, 'día', 'días');
+    setUnit('hours', hours, 'hora', 'horas');
+    $('c-months').textContent = months;
+    $('c-weeks').textContent = weeks;
+    $('c-days').textContent = days;
+    $('c-hours').textContent = hours;
+    $('c-mins').textContent = mins;
+    $('c-secs').textContent = secs;
+
+    lastDaysTotal = Math.floor(diff / DAY);
+    $('total').textContent = 'En total: ' + lastDaysTotal.toLocaleString('es-MX') + ' días';
+
+    var q = quincenas(nowLocal, target);
+    $('q-count').textContent = q.count;
+    $('q-next').textContent = q.next ? 'Próxima: ' + fmtDate(q.next) : '';
+
+    var a = aguinaldos(nowLocal, target);
+    $('a-count').textContent = a;
+    $('a-note').textContent = a === 0 ? 'Ya se cobró el último 😢' : (a === 1 ? 'El último 🥲' : 'Gracias a los ajustes de tiempo 😬');
+
+    if (extraDays || extraMonths) {
+      var parts = [];
+      if (extraDays) parts.push('+' + extraDays + (extraDays === 1 ? ' día' : ' días'));
+      if (extraMonths) parts.push('+' + extraMonths + (extraMonths === 1 ? ' mes' : ' meses'));
+      $('adjusted').textContent = 'Tiempo "ajustado": ' + parts.join(', ') + '. Recarga la página para deshacerlo.';
+      $('adjusted').style.display = 'block';
+    }
   }
 
   tick();
   setInterval(tick, 1000);
+
+  // ----- ¿Ya llegó? -----
+  var arrivedIdx = 0;
+  var arrivedReplies = [
+    function () { return 'No.'; },
+    function () { return 'Sigue sin llegar.'; },
+    function () { return '¿Otra vez tú?'; },
+    function () { return 'Te dije que no.'; },
+    function () { return 'Huy, ya me había emocionado.'; },
+    function () { return 'Faltan ' + lastDaysTotal + ' días. No, no se movió desde hace rato.'; },
+    function () { return 'Su solicitud ha sido turnada a quien corresponda.'; },
+    function () { return 'Favor de pasar a la ventanilla 3.'; },
+    function () { return 'Ya casi. (Mentira.)'; },
+    function () { return 'Jajaja no.'; }
+  ];
+  $('btn-arrived').addEventListener('click', function () {
+    $('reply').textContent = arrivedReplies[arrivedIdx % arrivedReplies.length]();
+    arrivedIdx++;
+  });
+
+  // ----- Adelantar / Regresar el tiempo -----
+  var forwardMsgs = [
+    'Error: no se puede apurar al destino. Se sumó 1 día como castigo.',
+    'Te dije que no se puede. Otro día más.',
+    'Entre más le picas, más lejos queda.',
+    'El sistema detecta desesperación. +1 día.'
+  ];
+  var backMsgs = [
+    'Regresando el tiempo… ups, era para el otro lado. +1 mes.',
+    'Calibrando la máquina del tiempo… +1 mes. Perdón.',
+    'Definitivamente no funciona así. +1 mes.'
+  ];
+  var fIdx = 0, bIdx = 0;
+  $('btn-forward').addEventListener('click', function () {
+    extraDays++;
+    $('reply').textContent = forwardMsgs[fIdx % forwardMsgs.length];
+    fIdx++;
+    $('btn-back').style.display = 'inline-block';
+    tick();
+  });
+  $('btn-back').addEventListener('click', function () {
+    extraMonths++;
+    $('reply').textContent = backMsgs[bIdx % backMsgs.length];
+    bIdx++;
+    tick();
+  });
+
+  // ----- Horóscopo del día (igual para todos durante el mismo día) -----
+  var horoscopes = [
+    'Hoy llegará un oficio urgente a las 2:58 pm. Los astros sugieren no voltear.',
+    'Venus entra en tu bandeja de entrada: 47 correos sin leer. Ignóralos con elegancia.',
+    'Un compañero te pedirá "un favorcito rápido". No existe tal cosa.',
+    'Tu número de la suerte es el de días que faltan. Sí, sigue siendo muy alto.',
+    'Hoy es buen día para imaginar la hamaca. Mal día para contárselo al jefe.',
+    'Mercurio retrógrado afectará la impresora. Como siempre, pero ahora con excusa astral.',
+    'Alguien te preguntará "¿cuánto te falta?". Responde con el link de esta página.',
+    'Los astros indican que habrá junta. Los astros también indican que pudo ser un correo.',
+    'Hoy encontrarás un expediente que creías perdido. Mañana lo volverás a perder.',
+    'Energía positiva en el sector quincena. Energía negativa en el sector descuentos.',
+    'Saturno recomienda no firmar nada antes del café.',
+    'Hoy sentirás que el reloj va más lento. No es tu imaginación: es viernes mentalmente.',
+    'Un desconocido te dirá "lic". Tú ya sabes que va a pedir algo.',
+    'La Luna en Pendientes te dará ganas de archivar todo. Hazlo, total ya casi.',
+    'Buen día para enseñarle a alguien dónde está todo. Alguien tendrá que saberlo.',
+    'Marte en tu signo te da paciencia infinita. Úsala sabiamente, se acaba a las 3.',
+    'Hoy no habrá sorpresas. Excepto la que siempre hay a las 2:55 pm.',
+    'Los astros ven un pastel de despedida en tu futuro. Todavía lejano, pero lo ven.',
+    'Evita decir "ya me voy a jubilar" más de 5 veces hoy. Van a empezar a contar.',
+    'Día ideal para calcular cuántos cafés te faltan. Spoiler: muchos.',
+    'Júpiter favorece los trámites. Lástima que Júpiter no trabaje aquí.',
+    'Hoy alguien te dirá "te vamos a extrañar". Probablemente para pedirte algo después.',
+    'Las estrellas se alinean para que salgas a tiempo. Las juntas, no.',
+    'Tu color de la suerte es el del sello de "recibido".',
+    'Hoy es un día más cerca. El horóscopo no puede decir nada más optimista que eso.',
+    'Posible encuentro con un formato nuevo que nadie sabe llenar. Respira.',
+    'El universo te recuerda: el que se jubila se lleva la engrapadora buena.',
+    'Neptuno anuncia vacaciones… de otros. Las tuyas son definitivas, pero en junio.',
+    'Hoy tu paciencia será puesta a prueba por el sistema. Ganarás, pero por poco.',
+    'Los astros no se equivocan: hoy tampoco llegó el día.',
+    'Buen momento para empezar a regalar tus pendientes. Con cariño, eso sí.'
+  ];
+  var todayIdx = Math.floor((Date.now() + TZ_OFFSET_MS) / DAY);
+  $('horoscope').textContent = horoscopes[todayIdx % horoscopes.length];
+
+  // ----- Easter egg: 10 toques al nombre -----
+  var taps = 0, tapTimer = null;
+  $('name').addEventListener('click', function () {
+    taps++;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(function () { taps = 0; }, 3000);
+    if (taps >= 10) {
+      taps = 0;
+      $('oficio-overlay').classList.add('show');
+    }
+  });
+  $('btn-accept').addEventListener('click', function () {
+    $('oficio-overlay').classList.remove('show');
+    $('reply').textContent = 'Resolución acatada. Siga trabajando.';
+  });
+  $('btn-appeal').addEventListener('click', function () {
+    $('oficio-overlay').classList.remove('show');
+    $('beach').classList.add('show');
+  });
+  $('btn-office').addEventListener('click', function () {
+    $('beach').classList.remove('show');
+  });
+
+  // ----- "¿Desea cancelar la jubilación?" (una vez por visita) -----
+  var dodges = 0;
+  var yes = $('btn-yes');
+  var box = $('modal-btns');
+
+  function dodge(e) {
+    if (dodges >= 3) return;
+    if (e && e.cancelable) e.preventDefault();
+    dodges++;
+    // Lugares seguros en la parte de arriba, para no encimarse con "No".
+    var maxX = box.clientWidth - yes.offsetWidth;
+    var spots = [[0, 0], [maxX / 2, 0], [maxX, 0], [0, 50], [maxX / 2, 50], [maxX, 50]];
+    var curX = yes.offsetLeft, curY = yes.offsetTop, pick;
+    do { pick = spots[Math.floor(Math.random() * spots.length)]; }
+    while (Math.abs(pick[0] - curX) + Math.abs(pick[1] - curY) < 60);
+    var x = pick[0], y = pick[1];
+    yes.style.left = Math.round(x) + 'px';
+    yes.style.top = Math.round(y) + 'px';
+    if (dodges >= 3) yes.textContent = 'Ok, ya: no';
+  }
+  yes.addEventListener('touchstart', dodge, { passive: false });
+  yes.addEventListener('mousedown', dodge);
+  yes.addEventListener('mouseenter', function (e) { if (dodges < 2) dodge(e); });
+  yes.addEventListener('click', function (e) {
+    if (dodges < 3) { dodge(e); return; }
+    closeCancel();
+  });
+  $('btn-no').addEventListener('click', closeCancel);
+
+  function closeCancel() {
+    $('cancel-overlay').classList.remove('show');
+    $('reply').textContent = 'Buena decisión. La jubilación sigue en pie.';
+  }
+
+  setTimeout(function () {
+    if ($('oficio-overlay').classList.contains('show') || $('beach').classList.contains('show')) return;
+    $('cancel-overlay').classList.add('show');
+  }, CANCEL_POPUP_SECONDS * 1000);
 })();
 </script>
 
